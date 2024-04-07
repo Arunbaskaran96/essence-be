@@ -18,13 +18,34 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Please Enter Your Password"],
-      minLength: [8, "Password should be greater than 8 characters"],
     },
     mobile: {
       type: Number,
       required: [true, "Please Enter MobileNo"],
-      length: [10, "Mobile Number number should 10 digits"],
+      // length: [10, "Mobile Number number should 10 digits"],
     },
+    address: [
+      {
+        contactName: {
+          type: String,
+        },
+        street: {
+          type: String,
+        },
+        city: {
+          type: String,
+        },
+        pincode: {
+          type: String,
+        },
+        contactNo: {
+          type: String,
+        },
+        state: {
+          type: String,
+        },
+      },
+    ],
   },
   { timeseries: true }
 );

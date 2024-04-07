@@ -5,16 +5,17 @@ const dotenv = require("dotenv");
 dotenv.config();
 const addUser = async (req, res) => {
   try {
-    const { firstName, lastName, mobile, email, password } = req.body;
+    const { firstName, lastName, mobile, email, password, address } = req.body;
     const newUser = new usermodel({
       firstName,
       lastName,
       email,
       mobile,
       password,
+      address,
     });
     await newUser.save();
-    res.status(200).json({ message: "success", newUser });
+    res.status(200).json({ success: true, newUser });
   } catch (error) {
     console.log(error);
   }
@@ -33,14 +34,37 @@ const signin = async (req, res) => {
         const { password, ...user } = isUser._doc;
         res.status(200).json({ success: true, token, user });
       } else {
-        console.log("incorrect user/password");
+        res
+          .status(400)
+          .json({ success: false, message: "incorrect user/password" });
       }
     } else {
-      console.log("no user found");
+      res.status(400).json({ success: false, message: "no user found" });
     }
   } catch (error) {
     console.log(error);
   }
 };
 
-module.exports = { addUser, signin };
+const address = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await usermodel.findById(id);
+    if (user) {
+      const user = await usermodel.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            address: req.body.address,
+          },
+        },
+        { new: true }
+      );
+      res.status(200).json({ success: true, user });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { addUser, signin, address };
